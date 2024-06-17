@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Fetch Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        input, button {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fetch API Example</h1>
+    <h2>GET Request</h2>
+    <button id="getRequestButton">Make GET Request</button>
+    <pre id="getResponse"></pre>
+
+    <h2>POST Request Changed</h2>
+    <form id="postForm">
+        <input type="text" id="postData" placeholder="Enter data to POST">
+        <input type="file" id="fileInput" accept=".png, .jpg, .jpeg">
+        <button type="submit">Make POST Request</button>
+    </form>
+    <pre id="postResponse"></pre>
+
+    <script>
+        document.getElementById('getRequestButton').addEventListener('click', () => {
+            fetch('http://3.108.67.78/about')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('getResponse').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('getResponse').textContent = 'Error: ' + error;
+                });
+        });
+
+        document.getElementById('postForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formdata = new FormData();
+            const myHeaders = new Headers();
+            const fileInput = document.getElementById('fileInput');
+
+            if (fileInput.files.length > 0) {
+                formdata.append('file', fileInput.files[0], '753_01.png');
+            }
+            myHeaders.append('Accept', 'application/json');
+
+            const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: formdata,
+                redirect: "follow"
+            };
+
+            fetch('http://3.108.67.78/api/v1/embryos/store', requestOptions)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('postResponse').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('postResponse').textContent = 'Error: ' + error;
+            });
+        });
+    </script>
+</body>
+</html>
+
